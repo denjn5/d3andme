@@ -8,18 +8,45 @@ Orig path: '/LOC/Falcon/Falcon/static'
 import bottle as web
 import os
 
+# Simple primary file
+@web.route('/simple')
+def index():
+    path = os.path.dirname(os.path.realpath(__file__)) + r'\app'
+    print('path: ' + path)
+    return web.static_file('simple.html', root=path)
+
+
 # Primary file
 @web.route('/')
-def index():
-    path = os.path.dirname(os.path.realpath(__file__)) + '\static'
-    return web.static_file('index.html', root=path)
+@web.route('/<name>')
+@web.view('d3andme')
+def index(name='World'):
+    #path = os.path.dirname(os.path.realpath(__file__)) + r'\app'
+    #print('path: ' + path)
+    return dict(name=name)
 
 
-# Supporting files
-@web.route('/static/<filename>')
+# Resources
+@web.route('/resource/<filename>')
 def index(filename):
-    path = os.path.dirname(os.path.realpath(__file__)) + '\static'
-    return web.static_file(filename, root=path)
+    res_path = os.path.dirname(os.path.realpath(__file__)) + r'\resources'
+    print('res_path: ' + res_path)
+    return web.static_file(filename, root=res_path)
+
+# Application files
+@web.route('/app/<filename>')
+def index(filename):
+    app_path = os.path.dirname(os.path.realpath(__file__)) + r'\app'
+    print('app_path: ' + app_path)
+    return web.static_file(filename, root=app_path)
+
+# Data
+@web.route('/data/<filename>')
+def index(filename):
+    data_path = os.path.dirname(os.path.realpath(__file__)) + r'\data'
+    print('data_path: ' + data_path)
+    return web.static_file(filename, root=data_path)
+
 
 #@web.view('hello_template')
 #def hello(name='World'):

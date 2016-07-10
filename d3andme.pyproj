@@ -22,22 +22,28 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="static\" />
+    <Folder Include="app\" />
+    <Folder Include="xbu\" />
+    <Folder Include="data\" />
+    <Folder Include="resources\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="main.py" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="d3andme.tpl">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="README.md" />
-    <Content Include="static\d3.js" />
-    <Content Include="static\d3.min.js" />
-    <Content Include="static\d3_force - Copy.js" />
-    <Content Include="static\d3_force.js" />
-    <Content Include="static\data.js" />
-    <Content Include="static\data.json" />
-    <Content Include="static\family.css" />
-    <Content Include="static\index.html" />
-    <Content Include="static\jquery-3.0.0.min.js" />
+    <Content Include="resources\d3.js" />
+    <Content Include="resources\d3.min.js" />
+    <Content Include="xbu\d3_force - Copy.js" />
+    <Content Include="app\d3_force.js" />
+    <Content Include="xbu\data.js" />
+    <Content Include="data\data.json" />
+    <Content Include="app\family.css" />
+    <Content Include="app\simple.html" />
+    <Content Include="resources\jquery-3.0.0.min.js" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
