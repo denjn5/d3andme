@@ -1,7 +1,6 @@
 # d3andme (d3js.org & me!)
 A python / d3 / jquery project
 
-
 ## Ideas
 * [ ] Change shape based on node type (m v f; rpt vs. source vs. view)
 * [ ] Turn off attraction for unconnected

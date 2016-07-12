@@ -23,7 +23,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="app\" />
-    <Folder Include="xbu\" />
     <Folder Include="data\" />
     <Folder Include="resources\" />
   </ItemGroup>
@@ -39,9 +38,7 @@
     <Content Include="resources\d3.min.js" />
     <Content Include="resources\female_symbol.svg" />
     <Content Include="resources\male_symbol.svg" />
-    <Content Include="xbu\d3_force - Copy.js" />
     <Content Include="app\d3_force.js" />
-    <Content Include="xbu\data.js" />
     <Content Include="data\data.json" />
     <Content Include="app\family.css" />
     <Content Include="app\simple.html" />

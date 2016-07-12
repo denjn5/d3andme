@@ -104,7 +104,7 @@ d3.json("data/data.json", function (error, dataset) {
         // Append images
         var node = gnodes.append("svg:image")
             .attr("xlink:href", function (d) {
-                var link = ((d.type == "Female") ? "resource/female_symbol.svg" : "resource/male_symbol.svg");
+                var link = ((d.type == "F") ? "resource/female_symbol.svg" : "resource/male_symbol.svg");
                 return link;
             })
             .attr("class", "node")
