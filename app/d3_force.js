@@ -31,7 +31,8 @@ var svg = d3.select(".force")
     .attr("width", w)
     .attr("height", h);
 
-//Initialize a default force layout, using the node and edges in dataset
+// Create the force layout.  After a call to force.start(), the tick method will
+// be called repeatedly until the layout "gels" in a stable configuration.
 var force = d3.layout.force()
     .size([w, h])
     .linkDistance([50])
@@ -40,20 +41,25 @@ var force = d3.layout.force()
 
 var colors = d3.scale.category10();
 
-// Set up node sizes: scale(0); // returns MINRADIUS
-var MINOPACITY = 0.1;
-var MAXOPACITY = 1; 
-var scaleOpacity = d3.scale.linear().domain([1, 3]).range([MINOPACITY, MAXOPACITY]);
+// Create a range of opacities to be used for the edges, then create a d3.scale that'll allow 
+// all values to be utilized across possible values. 
+var MINOPACITY = 0.1; // minimum opacity (0 is invisible)
+var MAXOPACITY = 1; // maximum opacity (1 is fully opaque) 
+//var minConnections = d3.min(d3.values(dataset.edges)).connections
+//var maxConnections = d3.max(d3.values(dataset.edges)).connections
+var edgeOpacityScale = d3.scale.linear().domain([1, 3]).range([MINOPACITY, MAXOPACITY]);
 
 // Set up node sizes: scale(0); // returns MINRADIUS
 var MINRADIUS = 7;
 var MAXRADIUS = 20;
+//var minChildren = d3.min(d3.values(dataset.node)).children
+//var maxChildren = d3.max(d3.values(dataset.node)).children
 var scaleRadius = d3.scale.linear().domain([0, 10]).range([MINRADIUS, MAXRADIUS]);
 
 // load the external data
 d3.json("data/data.json", function (error, dataset) {
 
-    dataEdges = dataset.edges.filter(function (d) { return d.count >= MINRELCOUNT; })
+    dataEdges = dataset.edges.filter(function (d) { return d.connections >= MINRELCOUNT; })
     dataNodes = dataset.node;
 
     force
@@ -67,7 +73,7 @@ d3.json("data/data.json", function (error, dataset) {
         .enter()
         .append("line")
         .attr("class", "edge")
-        .style("opacity", function (d) { return scaleOpacity(d.count); });
+        .style("opacity", function (d) { return edgeOpacityScale(d.connections); });
 
     // Create the groups under svg
     var gnodes = svg.selectAll('g.gnode')
