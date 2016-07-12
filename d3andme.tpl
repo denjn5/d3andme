@@ -19,6 +19,8 @@
 
     <font class="bodyText">Colored by Database.</font>
     <svg class="force"></svg>
+	<button type="button" id="conn_count" onclick="conn_show()">Only Show 3+ Connections</button> 
+	 
 
     <script type="text/javascript" src="app/d3_force.js"></script>
 

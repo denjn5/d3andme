@@ -3,16 +3,33 @@
 // http://bigtext.org/
 // return ((NODE_SIZE) ? scale(d.children) : 10);
 
+var MINRELCOUNT = 1 // Set which edges should show
+var USECIRCLES = true // set to false to use gender specific svg files
+
+
+function conn_show() {
+    //alert("holalalalalal.....!");
+    btn_cc = document.getElementById("conn_count");
+    if (btn_cc.innerText == "Show All Connections") {
+        btn_cc.innerText = "Only Show 3+ Connections";
+        MINRELCOUNT = 1;
+        force.start();
+    }
+    else {
+        btn_cc.innerText = "Show All Connections";
+        MINRELCOUNT = 3;
+        force.start();
+    };
+}
+
 //Width and height
 var w = 500;
 var h = 300;
-
 
 // Get ahold of SVG element
 var svg = d3.select(".force")
     .attr("width", w)
     .attr("height", h);
-
 
 //Initialize a default force layout, using the node and edges in dataset
 var force = d3.layout.force()
@@ -23,59 +40,89 @@ var force = d3.layout.force()
 
 var colors = d3.scale.category10();
 
-
 // Set up node sizes: scale(0); // returns MINRADIUS
 var MINOPACITY = 0.1;
 var MAXOPACITY = 1; 
 var scaleOpacity = d3.scale.linear().domain([1, 3]).range([MINOPACITY, MAXOPACITY]);
-
 
 // Set up node sizes: scale(0); // returns MINRADIUS
 var MINRADIUS = 7;
 var MAXRADIUS = 20;
 var scaleRadius = d3.scale.linear().domain([0, 10]).range([MINRADIUS, MAXRADIUS]);
 
-
 // load the external data
 d3.json("data/data.json", function (error, dataset) {
 
-    force
-        .nodes(dataset.node)
-        .links(dataset.edges)
-        .start()
+    dataEdges = dataset.edges.filter(function (d) { return d.count >= MINRELCOUNT; })
+    dataNodes = dataset.node;
 
+    force
+        .nodes(dataNodes)
+        .links(dataEdges)
+        .start();
 
     //Create edges as lines
     var edges = svg.selectAll("line")
-        .data(dataset.edges)
+        .data(dataEdges)
         .enter()
         .append("line")
         .attr("class", "edge")
         .style("opacity", function (d) { return scaleOpacity(d.count); });
 
-
     // Create the groups under svg
     var gnodes = svg.selectAll('g.gnode')
-        .data(dataset.node)
+        .data(dataNodes)
         .enter()
         .append('g')
         .classed('gnode', true);
 
-    // Add one circle in each group
-    var node = gnodes.append("circle")
-        .attr("class", "node")
-        .attr("r", function (d) { return scaleRadius(d.children); })
-        .style("fill", function (d, i) { return colors(d.group); })
-        .call(force.drag);
+    if (USECIRCLES) {
+        // Add one circle in each group
+        var node = gnodes.append("circle")
+            .attr("class", "node")
+            .attr("r", function (d) { return scaleRadius(d.children); })
+            .style("fill", function (d, i) { return colors(d.group); })
+            .call(force.drag);
 
+        // grow node a little on mouse over
+        var setEvents = node
+                .on('mouseenter', function () {
+                    //alert("holalalalalal.....!");
+                    // select element in current context
+                    d3.select(this)
+                        .transition()
+                        .attr("r", function (d) { return scaleRadius(d.children) * 2; })
+                })
+                // set back
+                .on('mouseleave', function () {
+                    d3.select(this)
+                        .transition()
+                        .attr("r", function (d) { return scaleRadius(d.children); })
+                });
+
+    } else {
+        // Append images
+        var node = gnodes.append("svg:image")
+            .attr("xlink:href", function (d) {
+                var link = ((d.type == "Female") ? "resource/female_symbol.svg" : "resource/male_symbol.svg");
+                return link;
+            })
+            .attr("class", "node")
+            .attr("x", function (d) { return -15; })
+            .attr("y", function (d) { return -15; })
+            .attr("height", 30)
+            .attr("width", 30)
+            .call(force.drag);
+    }
 
     // Append the labels to each group
     var labels = gnodes.append("text")
         .attr("class", "text")
         .attr("dx", 10)
         .attr("dy", ".35em")
+        .style("font-family", "Calibri")
+        .style("font-size", "10")
         .text(function (d) { return d.name});
-
 
     //Every time the simulation "ticks", this will be called
     force.on("tick", function () {
