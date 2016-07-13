@@ -6,7 +6,9 @@
 var MINRELCOUNT = 1 // Set which edges should show
 var USECIRCLES = true // set to false to use gender specific svg files
 
-
+// The action response for a button on the html page. It determines which 'edges' show
+// on the network graph.
+// TODO: Either redraw the graph or add/remove edges on the fly.
 function conn_show() {
     //alert("holalalalalal.....!");
     btn_cc = document.getElementById("conn_count");
@@ -32,7 +34,14 @@ var svg = d3.select(".force")
     .attr("height", h);
 
 // Create the force layout.  After a call to force.start(), the tick method will
-// be called repeatedly until the layout "gels" in a stable configuration.
+//   be called repeatedly until the layout "gels" in a stable configuration.
+// linkDistance is the distance we desire between connected nodes, 20 is default
+// linkStrength adjusts the strength of the linkDistance, 1 is default; a data driven statement:
+//   force.linkStrength(function(link) { if (link.className === 'red')  return 0.1; return 1; });
+// charge default is -30; a negative value results in node repulsion, a positive
+//   value in node attraction
+// TODO: Set charge to a greater number for nodes with no links. Or alter gravity.
+// TODO: Remove brackets for linkDistance and charge
 var force = d3.layout.force()
     .size([w, h])
     .linkDistance([50])
@@ -41,15 +50,20 @@ var force = d3.layout.force()
 
 var colors = d3.scale.category10();
 
-// Create a range of opacities to be used for the edges, then create a d3.scale that'll allow 
-// all values to be utilized across possible values. 
+// Create a range of opacities to be used for the edges, to make stronger bonds stand out.
+// then create a d3.scale that'll allow values to be evenly spread across possible values.
+// TODO: Fix min/max and incorporate.
 var MINOPACITY = 0.1; // minimum opacity (0 is invisible)
 var MAXOPACITY = 1; // maximum opacity (1 is fully opaque) 
 //var minConnections = d3.min(d3.values(dataset.edges)).connections
 //var maxConnections = d3.max(d3.values(dataset.edges)).connections
 var edgeOpacityScale = d3.scale.linear().domain([1, 3]).range([MINOPACITY, MAXOPACITY]);
 
-// Set up node sizes: scale(0); // returns MINRADIUS
+
+// Create a range of radii to be used for the node sizes, based on child count.
+// then create a d3.scale that'll allow values to be evenly spread across possible values.
+// TODO: Fix min/max and incorporate
+// TODO: change scaleRadius var name to nodeRadiusScale
 var MINRADIUS = 7;
 var MAXRADIUS = 20;
 //var minChildren = d3.min(d3.values(dataset.node)).children
@@ -59,9 +73,11 @@ var scaleRadius = d3.scale.linear().domain([0, 10]).range([MINRADIUS, MAXRADIUS]
 // load the external data
 d3.json("data/data.json", function (error, dataset) {
 
+    // Pull specific data from variables, limit which edges get used.
     dataEdges = dataset.edges.filter(function (d) { return d.connections >= MINRELCOUNT; })
     dataNodes = dataset.node;
 
+    //
     force
         .nodes(dataNodes)
         .links(dataEdges)
@@ -143,5 +159,4 @@ d3.json("data/data.json", function (error, dataset) {
         });
     });
 });
-
 
