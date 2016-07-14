@@ -25,7 +25,8 @@
       { "name": "Em", "group": "FamOr", "type": "F", "children": 0, "id": 22 },
       { "name": "Jo", "group": "FamSh", "type": "F", "children": 0, "id": 23 },
       { "name": "DS", "group": "FamSh", "type": "F", "children": 0, "id": 24 },
-      { "name": "Je", "group": "FamTo", "type": "M", "children": 1, "id": 25 }
+      { "name": "Je", "group": "FamTo", "type": "M", "children": 1, "id": 25 },
+      { "name": "Ba", "group": "FamTo", "type": "M", "children": 1, "id": 26 }
   ],
   "edges": [
       { "source": 0, "target": 1, "connections": 3 },
@@ -62,6 +63,9 @@
       { "source": 17, "target": 21, "connections": 1 },
       { "source": 17, "target": 22, "connections": 1 },
       { "source": 23, "target": 8, "connections": 1 },
-      { "source": 23, "target": 24, "connections": 1 }
+      { "source": 23, "target": 24, "connections": 1 },
+      { "source": 25, "target": 16, "connections": 1 },
+      { "source": 25, "target": 26, "connections": 1 },
+      { "source": 16, "target": 26, "connections": 1 }
   ]
 }
