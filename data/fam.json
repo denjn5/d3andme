@@ -1,5 +1,5 @@
 {
-  "node": [
+  "nodes": [
       { "name": "Fr", "group": "FamRi", "type": "M", "children": 3, "id": 0 }, 
       { "name": "Ru", "group": "FamRi", "type": "F", "children": 3, "id": 1 },  
       { "name": "Be", "group": "FamOr", "type": "F", "children": 2, "id": 2 },

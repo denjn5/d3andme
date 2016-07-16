@@ -1,6 +1,8 @@
 ﻿// d3_force.js
 // http://bl.ocks.org/mbostock/950642
 // http://bigtext.org/
+// TODO: Add, delete nodes, edges: http://bl.ocks.org/ericcoopey/6c602d7cb14b25c179a4, https://medium.com/@c_behrens/enter-update-exit-6cafc6014c36#.xmxn4kygw
+// TODO: Make text draggable: http://bl.ocks.org/ericcoopey/6c602d7cb14b25c179a4
 // return ((NODE_SIZE) ? scale(d.children) : 10);
 
 var MINRELCOUNT = 1 // Set which edges should show
@@ -70,7 +72,8 @@ var MAXRADIUS = 20;
 var nodeRadiusScale = d3.scale.linear().domain([0, 10]).range([MINRADIUS, MAXRADIUS]);
 
 // load the external data
-d3.json("data/data.json", function (error, dataset) {
+// TODO: Load data to variable, so I can use it freely
+d3.json("data/fam.json", function (error, dataset) {
 
 
     // Define the data for the example (from the *.json file above). A force layout generally
@@ -79,8 +82,9 @@ d3.json("data/data.json", function (error, dataset) {
     //
     // dataEdges is an array containing objects with 'source' & 'target'. The values of those 
     // properties are the indices in dataNodes array (the 2 endpoints of the link/edge).
-    dataNodes = dataset.node;
+    dataNodes = dataset.nodes;
     dataEdges = dataset.edges.filter(function (d) { return d.connections >= MINRELCOUNT; })
+    
 
     // start() calls the tick() method repeatedly to lay out the graph.
     force
