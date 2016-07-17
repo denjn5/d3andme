@@ -1,11 +1,8 @@
 ﻿
 .node {
-
-}
-
-
-.circle {
-
+  cursor: move;
+  stroke: #000;
+  stroke-width: 0px;
 }
 
 .edge {
@@ -15,6 +12,5 @@
 
 .text {
     font-family: Calibri;
-    font-size: x-small;
+    font-size: 12px;
 }
-

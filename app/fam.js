@@ -2,7 +2,6 @@
 // http://bl.ocks.org/mbostock/950642
 // http://bigtext.org/
 // TODO: Add, delete nodes, edges: http://bl.ocks.org/ericcoopey/6c602d7cb14b25c179a4, https://medium.com/@c_behrens/enter-update-exit-6cafc6014c36#.xmxn4kygw
-// TODO: Make text draggable: http://bl.ocks.org/ericcoopey/6c602d7cb14b25c179a4
 // return ((NODE_SIZE) ? scale(d.children) : 10);
 
 var MINRELCOUNT = 1 // Set which edges should show
@@ -12,7 +11,6 @@ var USECIRCLES = true // set to false to use gender specific svg files
 // on the network graph.
 // TODO: Either redraw the graph or add/remove edges on the fly.
 function conn_show() {
-    //alert("holalalalalal.....!");
     btn_cc = document.getElementById("conn_count");
     if (btn_cc.innerText == "Show All Connections") {
         btn_cc.innerText = "Only Show 3+ Connections";
@@ -49,8 +47,31 @@ var force = d3.layout.force()
     .linkDistance(50)
     .charge(-75);
 
+var drag = force.drag()
+    .on("dragstart", dragstart);
 
 var colors = d3.scale.category10();
+
+
+// Select the item (gnode) that was double-clicked, un-fix it's location.
+//   Then select the circle within, and remove the outline. 
+function dblclick(d) {
+    d3.select(this)
+        .classed("fixed", d.fixed = false)
+        .selectAll("circle")
+        .style("stroke-width", "0px");
+}
+
+
+// Select the item (gnode) that was dragged, fix it's location.
+//   Then select the circle within, and give it an outline. 
+function dragstart(d) {
+    d3.select(this)
+        .classed("fixed", d.fixed = true)
+        .selectAll("circle")
+        .style("stroke-width", "2px");
+}
+
 
 // Create a range of opacities to be used for the edges, to make stronger bonds stand out.
 // then create a d3.scale that'll allow values to be evenly spread across possible values.
@@ -130,28 +151,28 @@ d3.json("data/fam.json", function (error, dataset) {
     //   the g element are performed on all of its child elements, and any of its attributes are
     //   inherited by its child elements.
     // .classed() adds the 'gnode' class to each element, but only if it doesn't already exist.
+    // .on() adds an event watcher that will call the dblclick function when it is...
+    // .call() takes a selection ("gnodes" here) and hands it off to a function (drag)
+    //   drag binds a behavior to our nodes to allow interactive dragging, either mouse or touch
     var gnodes = svg.selectAll('g.gnode')
         .data(dataNodes)
         .enter()
         .append('g')
-        .classed('gnode', true);
+        .classed('gnode', true)
+        .on("dblclick", dblclick)
+        .call(drag);
 
     
     if (USECIRCLES) {
         // Add one circle to each gnode, with a class of node.
         // .attr() for "r" sets the radius based on the number of children.
         // .style() for "fill" sets the color based on our previously created colors var
-        // .call() takes a selection ("gnodes" here) and hands it off to a function (force.drag)
-        // force.drag binds a behavior to our nodes to allow interactive dragging, either mouse 
-        //   or touch
-        // TODO: Make it sticky: http://bl.ocks.org/mbostock/3750558
         // TODO: Make it collapsible: http://bl.ocks.org/mbostock/1093130
         // TODO: Use divergent forces: http://bl.ocks.org/mbostock/1021841
         var node = gnodes.append("circle")
             .attr("class", "node")
             .attr("r", function (d) { return nodeRadiusScale(d.children); })
-            .style("fill", function (d, i) { return colors(d.group); })
-            .call(force.drag);
+            .style("fill", function (d, i) { return colors(d.group); });
 
         // Add events to each node: resize on mouseenter and mouseleave
         // 'this' is a keyword which refers to the object on which the currently executing
@@ -196,8 +217,6 @@ d3.json("data/fam.json", function (error, dataset) {
         .attr("class", "text")
         .attr("dx", 10)
         .attr("dy", 3)
-        .style("font-family", "Calibri")
-        .style("font-size", "10")
         .text(function (d) { return d.name});
 
     // This tick method is called repeatedly until the layout stabilizes. The order in which we

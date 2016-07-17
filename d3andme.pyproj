@@ -24,13 +24,14 @@
   <ItemGroup>
     <Folder Include="app\" />
     <Folder Include="data\" />
+    <Folder Include="views\" />
     <Folder Include="resources\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="main.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="d3andme.tpl">
+    <Content Include="views\d3andme.tpl">
       <SubType>Code</SubType>
     </Content>
     <Content Include="README.md" />
